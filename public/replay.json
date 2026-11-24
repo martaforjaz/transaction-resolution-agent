@@ -1,0 +1,568 @@
+{
+  "shared": {
+    "copilot": 20,
+    "agent": 20,
+    "total": 20,
+    "median_ms": {
+      "copilot": 0.0021,
+      "agent": 0.0024
+    }
+  },
+  "before": {
+    "summary": {
+      "correct": 7,
+      "scenarios": 8,
+      "confirmed": 2,
+      "unexpected_actions": 0
+    },
+    "scenarios": [
+      {
+        "name": "Recorded decision",
+        "turns": [
+          {
+            "message": "Check TX-107",
+            "reference": "TX-107",
+            "diagnosis": "decision",
+            "outcome": "explain",
+            "case_id": null,
+            "reply": "The stored decision is APPROVE.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "decision"
+              }
+            ]
+          }
+        ],
+        "expected": "explain"
+      },
+      {
+        "name": "Review and duplicate",
+        "turns": [
+          {
+            "message": "Check TX-106",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "offer_review",
+            "case_id": null,
+            "reply": "The retry limit was reached. Reply \u2018open review\u2019 to send this to an operator.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "case_confirmed",
+            "case_id": "0a93d03f-3e48-4835-9f0b-685eda2ead55",
+            "reply": "Your review case is recorded. Reference: 0a93d03f-3e48-4835-9f0b-685eda2ead55.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              },
+              {
+                "tool": "open_review",
+                "result": "persisted"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "case_confirmed",
+            "case_id": "0a93d03f-3e48-4835-9f0b-685eda2ead55",
+            "reply": "Your review case is recorded. Reference: 0a93d03f-3e48-4835-9f0b-685eda2ead55.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              },
+              {
+                "tool": "open_review",
+                "result": "persisted"
+              }
+            ]
+          }
+        ],
+        "expected": "case_confirmed"
+      },
+      {
+        "name": "Response lost after commit",
+        "turns": [
+          {
+            "message": "Check TX-106",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "offer_review",
+            "case_id": null,
+            "reply": "The retry limit was reached. Reply \u2018open review\u2019 to send this to an operator.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "defer",
+            "case_id": null,
+            "reply": "I could not verify the outcome. A support operator should check before retrying.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              },
+              {
+                "tool": "open_review",
+                "result": "response lost"
+              }
+            ]
+          }
+        ],
+        "expected": "case_confirmed"
+      },
+      {
+        "name": "Failure before commit",
+        "turns": [
+          {
+            "message": "Check TX-106",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "offer_review",
+            "case_id": null,
+            "reply": "The retry limit was reached. Reply \u2018open review\u2019 to send this to an operator.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "defer",
+            "case_id": null,
+            "reply": "I could not verify the outcome. A support operator should check before retrying.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              },
+              {
+                "tool": "open_review",
+                "result": "response lost"
+              }
+            ]
+          }
+        ],
+        "expected": "defer"
+      },
+      {
+        "name": "Transaction API unavailable",
+        "turns": [
+          {
+            "message": "Check TX-106",
+            "reference": "TX-106",
+            "diagnosis": "unavailable",
+            "outcome": "defer",
+            "case_id": null,
+            "reply": "I could not verify the outcome. A support operator should check before retrying.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "unavailable"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-106",
+            "diagnosis": "unavailable",
+            "outcome": "defer",
+            "case_id": null,
+            "reply": "I could not verify the outcome. A support operator should check before retrying.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "unavailable"
+              }
+            ]
+          }
+        ],
+        "expected": "defer"
+      },
+      {
+        "name": "Missing reference",
+        "turns": [
+          {
+            "message": "open review",
+            "reference": null,
+            "diagnosis": "missing",
+            "outcome": "clarify",
+            "case_id": null,
+            "reply": "Which transaction should I check? Please provide one valid reference.",
+            "trace": []
+          }
+        ],
+        "expected": "clarify"
+      },
+      {
+        "name": "Ambiguous reference",
+        "turns": [
+          {
+            "message": "Check TX-106",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "offer_review",
+            "case_id": null,
+            "reply": "The retry limit was reached. Reply \u2018open review\u2019 to send this to an operator.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              }
+            ]
+          },
+          {
+            "message": "open review TX-106 TX-107",
+            "reference": null,
+            "diagnosis": "missing",
+            "outcome": "clarify",
+            "case_id": null,
+            "reply": "Which transaction should I check? Please provide one valid reference.",
+            "trace": []
+          }
+        ],
+        "expected": "clarify"
+      },
+      {
+        "name": "Action not authorized by policy",
+        "turns": [
+          {
+            "message": "Check TX-107",
+            "reference": "TX-107",
+            "diagnosis": "decision",
+            "outcome": "explain",
+            "case_id": null,
+            "reply": "The stored decision is APPROVE.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "decision"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-107",
+            "diagnosis": "decision",
+            "outcome": "explain",
+            "case_id": null,
+            "reply": "The stored decision is APPROVE.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "decision"
+              }
+            ]
+          }
+        ],
+        "expected": "explain"
+      }
+    ]
+  },
+  "after": {
+    "summary": {
+      "correct": 8,
+      "scenarios": 8,
+      "confirmed": 3,
+      "unexpected_actions": 0
+    },
+    "scenarios": [
+      {
+        "name": "Recorded decision",
+        "turns": [
+          {
+            "message": "Check TX-107",
+            "reference": "TX-107",
+            "diagnosis": "decision",
+            "outcome": "explain",
+            "case_id": null,
+            "reply": "The stored decision is APPROVE.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "decision"
+              }
+            ]
+          }
+        ],
+        "expected": "explain"
+      },
+      {
+        "name": "Review and duplicate",
+        "turns": [
+          {
+            "message": "Check TX-106",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "offer_review",
+            "case_id": null,
+            "reply": "The retry limit was reached. Reply \u2018open review\u2019 to send this to an operator.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "case_confirmed",
+            "case_id": "8e5de127-5864-4b97-a8f8-bc6b57d92e3a",
+            "reply": "Your review case is recorded. Reference: 8e5de127-5864-4b97-a8f8-bc6b57d92e3a.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              },
+              {
+                "tool": "open_review",
+                "result": "persisted"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "case_confirmed",
+            "case_id": "8e5de127-5864-4b97-a8f8-bc6b57d92e3a",
+            "reply": "Your review case is recorded. Reference: 8e5de127-5864-4b97-a8f8-bc6b57d92e3a.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              },
+              {
+                "tool": "open_review",
+                "result": "persisted"
+              }
+            ]
+          }
+        ],
+        "expected": "case_confirmed"
+      },
+      {
+        "name": "Response lost after commit",
+        "turns": [
+          {
+            "message": "Check TX-106",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "offer_review",
+            "case_id": null,
+            "reply": "The retry limit was reached. Reply \u2018open review\u2019 to send this to an operator.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "case_confirmed",
+            "case_id": "ca0a2dba-ae4c-4637-8736-c9c488f24e5f",
+            "reply": "Your review case is recorded. Reference: ca0a2dba-ae4c-4637-8736-c9c488f24e5f.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              },
+              {
+                "tool": "open_review",
+                "result": "response lost"
+              },
+              {
+                "tool": "read_review",
+                "result": "found"
+              }
+            ]
+          }
+        ],
+        "expected": "case_confirmed"
+      },
+      {
+        "name": "Failure before commit",
+        "turns": [
+          {
+            "message": "Check TX-106",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "offer_review",
+            "case_id": null,
+            "reply": "The retry limit was reached. Reply \u2018open review\u2019 to send this to an operator.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "defer",
+            "case_id": null,
+            "reply": "I could not verify the outcome. A support operator should check before retrying.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              },
+              {
+                "tool": "open_review",
+                "result": "response lost"
+              },
+              {
+                "tool": "read_review",
+                "result": "absent"
+              }
+            ]
+          }
+        ],
+        "expected": "defer"
+      },
+      {
+        "name": "Transaction API unavailable",
+        "turns": [
+          {
+            "message": "Check TX-106",
+            "reference": "TX-106",
+            "diagnosis": "unavailable",
+            "outcome": "defer",
+            "case_id": null,
+            "reply": "I could not verify the outcome. A support operator should check before retrying.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "unavailable"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-106",
+            "diagnosis": "unavailable",
+            "outcome": "defer",
+            "case_id": null,
+            "reply": "I could not verify the outcome. A support operator should check before retrying.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "unavailable"
+              }
+            ]
+          }
+        ],
+        "expected": "defer"
+      },
+      {
+        "name": "Missing reference",
+        "turns": [
+          {
+            "message": "open review",
+            "reference": null,
+            "diagnosis": "missing",
+            "outcome": "clarify",
+            "case_id": null,
+            "reply": "Which transaction should I check? Please provide one valid reference.",
+            "trace": []
+          }
+        ],
+        "expected": "clarify"
+      },
+      {
+        "name": "Ambiguous reference",
+        "turns": [
+          {
+            "message": "Check TX-106",
+            "reference": "TX-106",
+            "diagnosis": "review",
+            "outcome": "offer_review",
+            "case_id": null,
+            "reply": "The retry limit was reached. Reply \u2018open review\u2019 to send this to an operator.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "review"
+              }
+            ]
+          },
+          {
+            "message": "open review TX-106 TX-107",
+            "reference": null,
+            "diagnosis": "missing",
+            "outcome": "clarify",
+            "case_id": null,
+            "reply": "Which transaction should I check? Please provide one valid reference.",
+            "trace": []
+          }
+        ],
+        "expected": "clarify"
+      },
+      {
+        "name": "Action not authorized by policy",
+        "turns": [
+          {
+            "message": "Check TX-107",
+            "reference": "TX-107",
+            "diagnosis": "decision",
+            "outcome": "explain",
+            "case_id": null,
+            "reply": "The stored decision is APPROVE.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "decision"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-107",
+            "diagnosis": "decision",
+            "outcome": "explain",
+            "case_id": null,
+            "reply": "The stored decision is APPROVE.",
+            "trace": [
+              {
+                "tool": "read_transaction",
+                "result": "decision"
+              }
+            ]
+          }
+        ],
+        "expected": "explain"
+      }
+    ]
+  },
+  "duplicate_requests": 32
+}

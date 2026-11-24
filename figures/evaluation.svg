@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 168" role="img" aria-label="Scenarios passed before and after response reconciliation, seven versus eight">
+<rect width="640" height="168" fill="#f2f5fa" rx="12"/>
+<g font-family="system-ui,sans-serif" font-size="17" fill="#142d50">
+<text x="25" y="36" font-weight="700">Resolution scenarios passed</text>
+<text x="25" y="83">Before</text><text x="25" y="123">After</text>
+<rect x="115" y="63" width="385" height="25" fill="#7893ae" rx="3"/>
+<rect x="115" y="103" width="440" height="25" fill="#235c75" rx="3"/>
+<text x="510" y="82">7/8</text><text x="565" y="122">8/8</text>
+</g></svg>

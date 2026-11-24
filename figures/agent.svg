@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" role="img" aria-label="A support conversation connects transaction status to a verified review case">
+<rect width="800" height="220" fill="#142d50"/>
+<g fill="#203e63" stroke="#a5c5df" stroke-width="3" stroke-linejoin="round">
+<path d="M165 69h132v69h-92l-22 18v-18h-18z"/>
+<ellipse cx="402" cy="76" rx="42" ry="14"/><path d="M360 76v60c0 19 84 19 84 0V76m-84 30c0 19 84 19 84 0" fill="none"/>
+<rect x="511" y="69" width="123" height="79" rx="9"/></g>
+<path d="M188 93h80m-80 19h60m66-4h29m119 0h32" stroke="#a5c5df" stroke-width="4" stroke-linecap="round"/>
+<path d="m551 108 16 16 30-34" fill="none" stroke="#f1bd78" stroke-width="6" stroke-linecap="round"/>
+</svg>
