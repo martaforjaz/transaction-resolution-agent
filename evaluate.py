@@ -6,6 +6,7 @@ from time import perf_counter
 
 from agent import CaseStore, resolve
 from copilot import DEMO, answer
+from billing import BILLING, billing_turn
 
 root = Path(__file__).parent
 cases = json.loads((root / "cases.json").read_text())
@@ -24,6 +25,7 @@ scenarios = [
 def evaluate(recover):
     replay = []
     summary = dict(correct=0, scenarios=len(scenarios), confirmed=0, unexpected_actions=0)
+    durations = []
     for name, failure, messages, expected, count in scenarios:
         with tempfile.TemporaryDirectory() as tmp:
             store = CaseStore(Path(tmp) / "review.db")
@@ -38,11 +40,13 @@ def evaluate(recover):
 
             previous = None
             turns = []
+            started = perf_counter()
             for message in messages:
                 turn = resolve(message, previous, lambda ref: {} if failure == "read" else DEMO.get(ref),
                                create, store.find, recover)
                 previous = turn["reference"]
                 turns.append(turn)
+            durations.append((perf_counter() - started) * 1000)
             ids = [turn["case_id"] for turn in turns if turn["case_id"]]
             persisted = store.find("TX-106", "review")
             expected_write = name in {"Review and duplicate", "Response lost after commit"}
@@ -53,6 +57,24 @@ def evaluate(recover):
             if ids:
                 assert ids[0] == persisted
             replay.append(dict(name=name, turns=turns, expected=expected))
+    for name, ref, expected in [
+        ("Authorization versus captured payment", "TX-201", "explain"),
+        ("Two captured payments", "TX-202", "case_confirmed"),
+    ]:
+        with tempfile.TemporaryDirectory() as tmp:
+            store = CaseStore(Path(tmp) / "billing.db")
+            started = perf_counter()
+            first = billing_turn(f"I think I was charged twice for {ref}", None, BILLING, store)
+            second = billing_turn("open review", first["reference"], BILLING, store)
+            durations.append((perf_counter() - started) * 1000)
+            summary["scenarios"] += 1
+            summary["correct"] += second["outcome"] == expected
+            assert second["outcome"] == expected
+            assert bool(store.find(ref, "duplicate_capture")) == (expected == "case_confirmed")
+            replay.append(dict(name=name, turns=[first, second], expected=expected))
+    from statistics import median
+    summary["median_resolution_ms"] = round(median(durations), 2)
+    summary["max_resolution_ms"] = round(max(durations), 2)
     return dict(summary=summary, scenarios=replay)
 
 
@@ -76,7 +98,7 @@ def benchmark():
             timings["agent"].append((perf_counter() - start) * 1000)
         assert shared["agent"] == shared["copilot"] == len(cases)
     before, after = evaluate(False), evaluate(True)
-    assert before["summary"]["correct"] == 7 and after["summary"]["correct"] == 8
+    assert before["summary"]["correct"] == 9 and after["summary"]["correct"] == 10
     assert not after["summary"]["unexpected_actions"]
     assert after["summary"]["confirmed"] == 3
     from statistics import median

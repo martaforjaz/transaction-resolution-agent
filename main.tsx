@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
+import { RouterDemo } from "./RouterDemo";
 
 type Turn = {message:string; reply:string; outcome:string; reference:string|null; trace:{tool:string;result:string}[]};
 type Scenario = {name:string; expected:string; turns:Turn[]};
@@ -51,4 +52,4 @@ function App() {
     </section><section><h2>Action log</h2>{visible.map((turn,i)=><article key={i}><strong>Turn {i+1} · {turn.outcome.replaceAll("_"," ")}</strong><ul>{turn.trace.map((entry,j)=><li key={j}>{entry.tool} · {entry.result}</li>)}{!turn.trace.length && <li>No tools called</li>}</ul></article>)}</section></div>
   </main>;
 }
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(new URLSearchParams(location.search).has("router") ? <RouterDemo /> : <App />);

@@ -13,5 +13,6 @@ jobs:
           node-version: '24'
           cache: npm
       - run: python evaluate.py
+      - run: node router.test.mjs
       - run: npm ci
       - run: npm run build -- --base=./

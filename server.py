@@ -4,6 +4,8 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from agent import CaseStore, resolve
+from billing import BILLING, billing_turn
+from copilot import REFERENCE
 from copilot import lookup
 
 ROOT = Path(__file__).resolve().parent
@@ -27,11 +29,16 @@ class Handler(SimpleHTTPRequestHandler):
                 raise ValueError()
             from uuid import UUID
             if previous:
-                previous = str(UUID(previous)).upper()
+                previous = previous.upper()
+                if previous not in BILLING:
+                    previous = str(UUID(previous)).upper()
         except (ValueError, TypeError, KeyError, AttributeError):
             self.send_error(400)
             return
-        result = resolve(message, previous, lookup, store.create, store.find)
+        refs = set(REFERENCE.findall(message.upper()))
+        billing = bool(refs.intersection(BILLING)) or (not refs and previous in BILLING)
+        result = (billing_turn(message, previous, BILLING, store) if billing
+                  else resolve(message, previous, lookup, store.create, store.find))
         payload = json.dumps(result).encode()
         self.send_response(200)
         self.send_header("Content-Type", "application/json")

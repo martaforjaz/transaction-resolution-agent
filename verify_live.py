@@ -46,7 +46,15 @@ def main():
                     state = json.load(res)
                 assert state["attempts"] == 1 and state["decision"] in turn["reply"]
                 assert server.store.find(reference.upper(), "review") is None
-                print("Verified Java decision, equivalent duplicate feed submission and rejected review action.")
+                authorization = post(url, dict(message="I think I was charged twice for TX-201"))
+                assert authorization["outcome"] == "explain" and "pending authorization" in authorization["reply"]
+                captured = post(url, dict(message="Check TX-202"))
+                assert captured["outcome"] == "offer_review"
+                assert server.store.find("TX-202", "duplicate_capture") is None
+                first_case = post(url, dict(message="open review", previous="tx-202"))
+                repeated = post(url, dict(message="open review", previous="TX-202"))
+                assert first_case["case_id"] and repeated["case_id"] == first_case["case_id"]
+                print("Verified Java decisions, duplicate feed submissions and both billing flows through HTTP.")
             finally:
                 gateway.shutdown()
                 worker.join()

@@ -5,15 +5,17 @@
     "total": 20,
     "median_ms": {
       "copilot": 0.0021,
-      "agent": 0.0024
+      "agent": 0.002
     }
   },
   "before": {
     "summary": {
-      "correct": 7,
-      "scenarios": 8,
+      "correct": 9,
+      "scenarios": 10,
       "confirmed": 2,
-      "unexpected_actions": 0
+      "unexpected_actions": 0,
+      "median_resolution_ms": 0.02,
+      "max_resolution_ms": 2.48
     },
     "scenarios": [
       {
@@ -58,8 +60,8 @@
             "reference": "TX-106",
             "diagnosis": "review",
             "outcome": "case_confirmed",
-            "case_id": "0a93d03f-3e48-4835-9f0b-685eda2ead55",
-            "reply": "Your review case is recorded. Reference: 0a93d03f-3e48-4835-9f0b-685eda2ead55.",
+            "case_id": "a0df9516-23d6-4f27-89be-bbf3971623d9",
+            "reply": "Your review case is recorded. Reference: a0df9516-23d6-4f27-89be-bbf3971623d9.",
             "trace": [
               {
                 "tool": "read_transaction",
@@ -76,8 +78,8 @@
             "reference": "TX-106",
             "diagnosis": "review",
             "outcome": "case_confirmed",
-            "case_id": "0a93d03f-3e48-4835-9f0b-685eda2ead55",
-            "reply": "Your review case is recorded. Reference: 0a93d03f-3e48-4835-9f0b-685eda2ead55.",
+            "case_id": "a0df9516-23d6-4f27-89be-bbf3971623d9",
+            "reply": "Your review case is recorded. Reference: a0df9516-23d6-4f27-89be-bbf3971623d9.",
             "trace": [
               {
                 "tool": "read_transaction",
@@ -279,15 +281,89 @@
           }
         ],
         "expected": "explain"
+      },
+      {
+        "name": "Authorization versus captured payment",
+        "turns": [
+          {
+            "message": "I think I was charged twice for TX-201",
+            "reference": "TX-201",
+            "diagnosis": "billing",
+            "outcome": "explain",
+            "case_id": null,
+            "reply": "One payment was captured. The other entry is a pending authorization, not a second captured payment.",
+            "trace": [
+              {
+                "tool": "read_settlement_history",
+                "result": "2 matching entries"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-201",
+            "diagnosis": "billing",
+            "outcome": "explain",
+            "case_id": null,
+            "reply": "One payment was captured. The other entry is a pending authorization, not a second captured payment.",
+            "trace": [
+              {
+                "tool": "read_settlement_history",
+                "result": "2 matching entries"
+              }
+            ]
+          }
+        ],
+        "expected": "explain"
+      },
+      {
+        "name": "Two captured payments",
+        "turns": [
+          {
+            "message": "I think I was charged twice for TX-202",
+            "reference": "TX-202",
+            "diagnosis": "billing",
+            "outcome": "offer_review",
+            "case_id": null,
+            "reply": "Two payments were captured for this purchase. Reply \u2018open review\u2019 to request a review.",
+            "trace": [
+              {
+                "tool": "read_settlement_history",
+                "result": "2 matching entries"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-202",
+            "diagnosis": "billing",
+            "outcome": "case_confirmed",
+            "case_id": "f5109c3b-ff95-4f22-8a2b-607af1eda156",
+            "reply": "Your review case is recorded. Reference: f5109c3b-ff95-4f22-8a2b-607af1eda156.",
+            "trace": [
+              {
+                "tool": "read_settlement_history",
+                "result": "2 matching entries"
+              },
+              {
+                "tool": "open_review",
+                "result": "persisted and verified"
+              }
+            ]
+          }
+        ],
+        "expected": "case_confirmed"
       }
     ]
   },
   "after": {
     "summary": {
-      "correct": 8,
-      "scenarios": 8,
+      "correct": 10,
+      "scenarios": 10,
       "confirmed": 3,
-      "unexpected_actions": 0
+      "unexpected_actions": 0,
+      "median_resolution_ms": 0.02,
+      "max_resolution_ms": 2.12
     },
     "scenarios": [
       {
@@ -332,8 +408,8 @@
             "reference": "TX-106",
             "diagnosis": "review",
             "outcome": "case_confirmed",
-            "case_id": "8e5de127-5864-4b97-a8f8-bc6b57d92e3a",
-            "reply": "Your review case is recorded. Reference: 8e5de127-5864-4b97-a8f8-bc6b57d92e3a.",
+            "case_id": "24d6397e-8076-41bc-afba-2a5088db0160",
+            "reply": "Your review case is recorded. Reference: 24d6397e-8076-41bc-afba-2a5088db0160.",
             "trace": [
               {
                 "tool": "read_transaction",
@@ -350,8 +426,8 @@
             "reference": "TX-106",
             "diagnosis": "review",
             "outcome": "case_confirmed",
-            "case_id": "8e5de127-5864-4b97-a8f8-bc6b57d92e3a",
-            "reply": "Your review case is recorded. Reference: 8e5de127-5864-4b97-a8f8-bc6b57d92e3a.",
+            "case_id": "24d6397e-8076-41bc-afba-2a5088db0160",
+            "reply": "Your review case is recorded. Reference: 24d6397e-8076-41bc-afba-2a5088db0160.",
             "trace": [
               {
                 "tool": "read_transaction",
@@ -388,8 +464,8 @@
             "reference": "TX-106",
             "diagnosis": "review",
             "outcome": "case_confirmed",
-            "case_id": "ca0a2dba-ae4c-4637-8736-c9c488f24e5f",
-            "reply": "Your review case is recorded. Reference: ca0a2dba-ae4c-4637-8736-c9c488f24e5f.",
+            "case_id": "24f095d6-8457-460e-a9d7-a8fcd21d374e",
+            "reply": "Your review case is recorded. Reference: 24f095d6-8457-460e-a9d7-a8fcd21d374e.",
             "trace": [
               {
                 "tool": "read_transaction",
@@ -561,6 +637,78 @@
           }
         ],
         "expected": "explain"
+      },
+      {
+        "name": "Authorization versus captured payment",
+        "turns": [
+          {
+            "message": "I think I was charged twice for TX-201",
+            "reference": "TX-201",
+            "diagnosis": "billing",
+            "outcome": "explain",
+            "case_id": null,
+            "reply": "One payment was captured. The other entry is a pending authorization, not a second captured payment.",
+            "trace": [
+              {
+                "tool": "read_settlement_history",
+                "result": "2 matching entries"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-201",
+            "diagnosis": "billing",
+            "outcome": "explain",
+            "case_id": null,
+            "reply": "One payment was captured. The other entry is a pending authorization, not a second captured payment.",
+            "trace": [
+              {
+                "tool": "read_settlement_history",
+                "result": "2 matching entries"
+              }
+            ]
+          }
+        ],
+        "expected": "explain"
+      },
+      {
+        "name": "Two captured payments",
+        "turns": [
+          {
+            "message": "I think I was charged twice for TX-202",
+            "reference": "TX-202",
+            "diagnosis": "billing",
+            "outcome": "offer_review",
+            "case_id": null,
+            "reply": "Two payments were captured for this purchase. Reply \u2018open review\u2019 to request a review.",
+            "trace": [
+              {
+                "tool": "read_settlement_history",
+                "result": "2 matching entries"
+              }
+            ]
+          },
+          {
+            "message": "open review",
+            "reference": "TX-202",
+            "diagnosis": "billing",
+            "outcome": "case_confirmed",
+            "case_id": "0baab39a-d108-44ec-897e-62893c727eae",
+            "reply": "Your review case is recorded. Reference: 0baab39a-d108-44ec-897e-62893c727eae.",
+            "trace": [
+              {
+                "tool": "read_settlement_history",
+                "result": "2 matching entries"
+              },
+              {
+                "tool": "open_review",
+                "result": "persisted and verified"
+              }
+            ]
+          }
+        ],
+        "expected": "case_confirmed"
       }
     ]
   },

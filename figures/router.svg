@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" role="img" aria-label="Router with wireless waves and a verified signal">
+<rect width="800" height="220" fill="#142d50"/>
+<g fill="none" stroke="#a5c5df" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M275 132V83m211 49V83M324 72q57-50 114 0m-96 17q39-34 78 0m-59 16q20-18 40 0"/>
+<rect x="256" y="132" width="250" height="43" rx="12" fill="#203e63"/>
+<path d="M287 154h3m17 0h3m17 0h3m130 0h16"/></g>
+<circle cx="556" cy="151" r="23" fill="#203e63" stroke="#f1bd78" stroke-width="3"/>
+<path d="m545 152 8 8 14-17" fill="none" stroke="#f1bd78" stroke-width="4" stroke-linecap="round"/>
+</svg>
